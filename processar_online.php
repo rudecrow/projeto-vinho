@@ -5,6 +5,12 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // mysqli lança exceções
 
+<?php declare(strict_types=1);
+
+ini_set('display_errors', '1');
+error_reporting(E_ALL);
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
 $host = getenv('MYSQLHOST') ?: 'mysql.railway.internal';
 $port = (int)(getenv('MYSQLPORT') ?: 3306);
 $user = getenv('MYSQLUSER') ?: 'root';
@@ -12,19 +18,7 @@ $password = getenv('MYSQLPASSWORD') ?: '';
 $dbname = getenv('MYSQLDATABASE') ?: 'railway';
 
 $conn = new mysqli($host, $user, $password, $dbname, $port);
-
-if ($conn->connect_error) {
-    die("Erro de ligação: " . $conn->connect_error);
-}
-
-$conn->set_charset("utf8mb4");
-try {
-    $conn = new mysqli($host, $user, $password, $dbname);
-    $conn->set_charset('utf8mb4'); // acentos
-} catch (\mysqli_sql_exception $e) {
-    http_response_code(500);
-    exit('Erro de ligação à base de dados.');
-}
+$conn->set_charset('utf8mb4');
 
 // ---- Helpers base ----
 function num($val): float {
