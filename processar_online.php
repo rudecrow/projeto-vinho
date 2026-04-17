@@ -12,7 +12,7 @@ $host = getenv('MYSQLHOST') ?: 'mysql.railway.internal';
 $port = (int)(getenv('MYSQLPORT') ?: 3306);
 $user = getenv('MYSQLUSER') ?: 'root';
 $password = getenv('MYSQLPASSWORD') ?: '';
-$dbname = getenv('MYSQLDATABASE') ?: 'railway';
+$dbname = getenv('MYSQL_DATABASE') ?: 'railway';
 
 $conn = new mysqli($host, $user, $password, $dbname, $port);
 $conn->set_charset('utf8mb4');
