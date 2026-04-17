@@ -5,11 +5,11 @@ ini_set('display_errors', '1');
 error_reporting(E_ALL);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // mysqli lança exceções
 
-$host = "nozomi.proxy.rlwy.net";
-$port = 13333;
-$user = "root";
-$password = "TUA_PASSWORD";
-$dbname = "railway";
+$host = getenv('MYSQLHOST') ?: 'mysql.railway.internal';
+$port = (int)(getenv('MYSQLPORT') ?: 3306);
+$user = getenv('MYSQLUSER') ?: 'root';
+$password = getenv('MYSQLPASSWORD') ?: '';
+$dbname = getenv('MYSQLDATABASE') ?: 'railway';
 
 $conn = new mysqli($host, $user, $password, $dbname, $port);
 
