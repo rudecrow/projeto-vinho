@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Formulário de Parâmetros - Vinicultura</title>
+
+<style>
+    body { font-family: Arial, sans-serif; padding: 20px; background-color: #f4f4f4; }
+    h2 { background-color: #2e7d32; color: white; padding: 10px; border-radius: 5px; }
+    fieldset { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 5px; background: white; }
+    label { display: block; margin: 10px 0 5px; }
+
+    input[type="text"],
+    input[type="number"] {
+      width: 50%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #26932b;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    
+
+    /* ======== CSS QUE TINHA FICADO FORA ======== */
+
+    select {
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+      color: #000;          /* 👈 garante texto visível */
+      background-color: #fff;
+    }
+
+    .fert-item,
+    .herb-item,
+    .fito-item,
+    .gas-item,
+    .prod-enol-item,
+    .limpeza-item {
+      grid-template-columns: minmax(260px, 500px) 120px auto !important;
+    }
+
+    .fert-item input,
+    .herb-item input,
+    .fito-item input,
+    .gas-item input,
+    .prod-enol-item input,
+    .limpeza-item input {
+      max-width: 120px;
+    }
+
+    .grid-row select {
+      max-width: 500px;
+    }
+
+    @media (max-width: 768px) {
+      select,
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .fert-item,
+      .herb-item,
+      .fito-item,
+      .gas-item,
+      .prod-enol-item,
+      .limpeza-item {
+        grid-template-columns: 1fr !important;
+      }
+    }
+    /* ===============================
+    BOTÃO REMOVER (compacto)
+    =============================== */
+
+    .btn-rem {
+      padding: 6px 12px;        /*  muito mais pequeno */
+      font-size: 0.9em;
+      background-color: #d70e0e; /* mantém a cor */
+      white-space: nowrap;      /* não estica o texto */
+      width: auto;              /*  NÃO ocupar a linha toda */
+      min-width: unset;
+    }
+
+    /* Garante que o botão não estica dentro dos grids */
+    .fert-item .btn-rem,
+    .herb-item .btn-rem,
+    .fito-item .btn-rem,
+    .gas-item .btn-rem,
+    .prod-enol-item .btn-rem,
+    .limpeza-item .btn-rem {
+      justify-self: start;      /*  fica só do tamanho do conteúdo */
+    }
+
+
+    /* ===============================
+    VALIDAÇÃO VISUAL (PONTO C)
+     =============================== */
+
+    /* campo válido */
+    input.is-valid,
+    select.is-valid {
+     border: 2px solid #2e7d32;   /* verde */
+      background-color: #f1f8f4;
+    }
+
+    /* campo inválido */
+    input.is-invalid,
+    select.is-invalid {
+      border: 2px solid #c62828;   /* vermelho */
+      background-color: #fdecea;
+    }
+    /* remove efeito quando está vazio */
+    input:placeholder-shown {
+      border-color: #ccc;
+      background-color: #fff;
+    }
+    
+  
+
+/* ===== Wizard / Stepper (UI moderno, sem alterar nomes dos campos) ===== */
+:root{
+  --bg: #f6f7f9;
+  --card: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --border: #e5e7eb;
+  --shadow: 0 8px 24px rgba(17,24,39,0.08);
+  --accent: #2e7d32;
+  --accent-2: #1b5e20;
+  --danger: #b91c1c;
+}
+
+body{
+  background: var(--bg);
+  color: var(--text);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  line-height: 1.35;
+}
+
+form{
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.wizard-top{
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(246,247,249,0.92);
+  backdrop-filter: blur(6px);
+  padding: 10px 10px 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+
+.stepper{
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px;
+  padding: 0;
+  margin: 0;
+}
+
+.stepper-step{
+  display: flex;
+}
+
+.stepper-btn{
+  width: 100%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  border-radius: 12px;
+  padding: 10px 10px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 1px 0 rgba(17,24,39,0.03);
+}
+
+
+
+.stepper-step.is-active .stepper-btn{
+  border-color: rgba(46,125,50,0.45);
+  box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
+  font-weight: 600;
+}
+
+.stepper-step.is-done .stepper-btn{
+  border-color: rgba(46,125,50,0.30);
+  color: var(--accent-2);
+}
+
+.stepper-step.is-locked .stepper-btn{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.stepper-meta{
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+fieldset.step-panel{
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  background: var(--card) !important;
+  box-shadow: var(--shadow);
+  padding: 16px 16px 10px !important;
+}
+
+
+
+fieldset.step-panel legend{
+  padding: 0 6px;
+}
+
+fieldset.step-panel legend h2{
+  background: transparent !important;
+  color: var(--text) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border-radius: 0 !important;
+  font-size: 1.15rem;
+  font-weight: 700;
+}
+
+.step-panel[hidden]{ display:none !important; }
+
+label{
+  font-weight: 600;
+}
+
+input[type="text"], input[type="number"], input[type="email"], input[type="date"], select, textarea{
+  width: 100% !important;
+  max-width: 680px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+  outline: none;
+}
+
+input:focus, select:focus, textarea:focus{
+  border-color: rgba(46,125,50,0.50);
+  box-shadow: 0 0 0 3px rgba(46,125,50,0.12);
+}
+
+.stepper-btn {
+  color: #111827 !important;
+  font-weight: 600;
+}
+
+.wizard-nav{
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0 6px;
+}
+
+.btn{
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 650;
+}
+
+.btn:disabled{
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.btn-primary{
+  background: var(--accent);
+  color: #fff;
+  border-color: rgba(46,125,50,0.55);
+}
+
+.btn-secondary{
+  background: #fff;
+  color: #111827;   /* força texto visível */
+  border: 1px solid #d1d5db;
+}
+
+.btn-success{
+  background: #111827;
+  color: #fff;
+  border-color: rgba(17,24,39,0.55);
+}
+
+.helper-error{
+  color: var(--danger);
+  font-size: 0.9rem;
+  margin-top: 6px;
+}
+
+/* Mobile: stepper mais compacto */
+@media (max-width: 640px){
+  .stepper{ grid-template-columns: 1fr; }
+  .wizard-nav{ flex-direction: column; align-items: stretch; }
+}
+
+
+
+</style>
+</head>
+
+<body>
+
+<h1>Formulário de Recolha de Parâmetros</h1>
+
+<form action="processar.php" method="POST">
+
+  <nav aria-label="Etapas do formulário" class="wizard-top">
+    <ol class="stepper">
+
+      <li class="stepper-step" data-step="0">
+        <button type="button" class="stepper-btn" aria-controls="step-0">
+          Viticultura
+        </button>
+      </li>
+
+      <li class="stepper-step" data-step="1">
+        <button type="button" class="stepper-btn" aria-controls="step-1">
+          Colheita-Transporte
+        </button>
+      </li>
+
+      <li class="stepper-step" data-step="2">
+        <button type="button" class="stepper-btn" aria-controls="step-2">
+          Vinificação
+        </button>
+      </li>
+
+      <li class="stepper-step" data-step="3">
+        <button type="button" class="stepper-btn" aria-controls="step-3">
+          Engarrafamento
+        </button>
+      </li>
+
+      <li class="stepper-step" data-step="4">
+        <button type="button" class="stepper-btn" aria-controls="step-4">
+          Distribuição
+        </button>
+      </li>
+
+    </ol>
+
+    <div class="stepper-meta" id="wizard_progress"></div>
+  </nav>
+
+<fieldset class="step-panel" data-step="0" id="step-0">
+
+  <legend><h2>Viticultura</h2></legend>
+    
+    <div id="veiculos_vit_wrap"></div>
+    <button type="button" id="add_veiculo_vit">+ Adicionar veículo</button>
+    <template id="tpl_veiculo_vit">
+      <div class="veic-item" style="border:1px dashed #ddd; border-radius:8px; padding:10px; margin:10px 0;">
+        <div class="grid-row">
+          <div>
+            <label>Tipo de veículo</label>
+            <select name="__NAME_PREFIX__[veiculo]" required>
+              <option value="">-- Selecione --</option>
+              <option value="carro">Automóvel</option>
+              <option value="trator">Trator</option>
+              <option value="carrinha">Carrinha</option>
+              <option value="eletrico">Elétrico</option>
+            </select>
+          </div>
+          <div class="combustivel-box">
+            <label>Tipo de Combustível</label>
+            <select name="__NAME_PREFIX__[combustivel]">
+              <option value="">-- Selecione --</option>
+              <option value="Gasoleo">Gásoleo (2.7 kgCO₂L⁻¹)</option>
+              <option value="Gasoleo Verde">Gásoleo Verde (2.7 kgCO₂L⁻¹)</option>
+              <option value="Gasolina">Gasolina (3.24 kgCO₂L⁻¹)</option>
+              <option value="GPL">GPL (1.48 kgCO₂L⁻¹)</option>
+              <option value="Gás Natural">Gás Natural (1.67 kgCO₂L⁻¹)</option>
+              <option value="Gás Propano">Gás Propano (1.51 kgCO₂L⁻¹)</option>
+            </select>
+          </div>
+        </div>
+
+
+        <div class="grid-row modo-box" style="margin-top:6px;">
+          <div>
+            <label>Como pretende indicar o consumo?</label>
+            <div class="row-actions">
+              <label><input type="radio" name="__NAME_PREFIX__[modo]" value="km"> Por distância</label>
+              <label><input type="radio" name="__NAME_PREFIX__[modo]" value="litros" checked> Por combustível</label>
+            </div>
+          </div>
+        <div>
+          <label>Distância </label>
+          <input type="number" name="__NAME_PREFIX__[distancia]" min="0" step="0.000001" placeholder="KM" disabled>
+        </div>
+      </div>
+
+
+      <div class="grid-row" style="margin-top:6px;">
+        <div class="litros-box">
+          <label>Combustível </label>
+          <input type="number" name="__NAME_PREFIX__[litros]" min="0" step="0.000001" placeholder="Litros">
+        </div>
+        <div class="ev-box" style="display:none;">
+          <label>Eletricidade do veículo </label>
+          <input type="number" name="__NAME_PREFIX__[kwh]" step="0.000001" placeholder="kWh" disabled>
+        </div>
+      </div>
+
+
+      <div class="row-actions" style="margin-top:8px; justify-content:flex-end;">
+        <button type="button" class="btn-rem">Remover</button>
+      </div>
+    </div>
+    </template>
+
+    <label>Água consumida</label><input type="number" name="agua_vit" placeholder="m³">
+
+    <label>Área da vinha </label>
+    <input type="number" name="area_vinha"
+       min="0" step="0.000001" inputmode="decimal" lang="pt-PT"  placeholder="ha">
+
+    
+  <label for="sequestro_nivel">Tipo de sequestro</label>
+  <div class="field-with-help">
+    <select id="sequestro_nivel" name="sequestro_nivel" required>
+      <option value="" selected disabled>Selecione…</option>
+      <option value="nao_considerar">Não considerar</option>
+      <option value="muito_baixo">Muito reduzido</option>
+      <option value="baixo">reduzido</option>
+      <option value="medio">Médio</option>
+      <option value="alto">Elevado</option>
+      <option value="muito_elevado">Muito Elevado</option>
+      
+    </select>
+
+    <!-- Ícone de ajuda com tooltip -->
+    <span class="hint" tabindex="0" aria-label="Ajuda sobre sequestro de carbono">
+      <span class="icon" aria-hidden="true">i</span>
+      <span class="tooltip" id="tipSequestro"></span>
+    </span>
+  </div>
+
+
+  <div id="sequestro_valor_wrap" style="display:none; margin-top:6px;">
+  <label for="sequestro_valor">Valor dentro do intervalo:</label>
+    <input type="number" id="sequestro_valor" name="sequestro_valor"
+         step="0.01" min="0" placeholder="Ex.: 0.12">
+    <small id="sequestro_hint" class="mini-hint"></small>
+  </div>
+
+
+    <hr style="margin:16px 0;">
+    <!-- ========== FERTILIZANTES (linhas repetíveis) ========== -->
+    <h4>Consumo de fertilizantes</h4>
+    <div id="fertilizantes_wrap"></div>
+    <button type="button" id="add_fertilizante">+ Adicionar fertilizante</button>
+
+    <template id="tpl_fertilizante">
+      <div class="fert-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
+        <select name="__NAME_PREFIX__[marca]" required>
+          <option value="">-- Selecione --</option>
+          <option value="Estrume bovino fresco">Estrume bovino fresco (0.25 kgCO₂kg⁻¹)</option>
+          <option value="Estrume de aves">Estrume de aves (0.35 kgCO₂kg⁻¹)</option>
+          <option value="Esterco suíno líquido">Esterco suíno líquido (0.04 kgCO₂kg⁻¹)</option>
+          <option value="Composto orgânico">Composto orgânico(0.35 kgCO₂kg⁻¹)</option>
+          <option value="Digestato de biogás">Digestato de biogás (0.06 kgCO₂kg⁻¹)</option>
+          <option value="Farinha de ossos / subprodutos">Farinha de ossos / subprodutos (0.45 kgCO₂kg⁻¹)</option>
+          <option value="Pellets de esterco/composto">Pellets de esterco/composto (0.35 kgCO₂kg⁻¹)</option>
+          <option value="Ureia">Ureia (4.55 kgCO₂kg⁻¹)</option>
+          <option value="Nitrato de amónio">Nitrato de amónio (3.55 kgCO₂kg⁻¹)</option>
+          <option value="Nitrato de cálcio">Nitrato de cálcio (2.50 kgCO₂kg⁻¹)</option>
+          <option value="Sulfato de amónio">Sulfato de amónio (2.35 kgCO₂kg⁻¹)</option>
+          <option value="Nitrato de potássio">Nitrato de potássio (2.90 kgCO₂kg⁻¹)</option>
+          <option value="Superfosfato simples (SSP)">Superfosfato simples (SSP) (0.45 kgCO₂kg⁻¹ )</option>
+          <option value="Superfosfato triplo (TSP)">Superfosfato triplo (TSP) (0.85 kgCO₂kg⁻¹ )</option>
+          <option value="Fosfato monoamónico (MAP)">Fosfato monoamónico (MAP) (1.25 kgCO₂kg⁻¹ )</option>
+          <option value="Fosfato diamónico (DAP)">Fosfato diamónico (DAP) (1.60 kgCO₂kg⁻¹ )</option>
+          <option value="Cloreto de potássio(KCL, MOP)">Cloreto de potássio(KCL, MOP) (0.30 kgCO₂kg⁻¹ )</option>
+          <option value="Sulfato de potássio(K2SO4, SOP)">Sulfato de potássio(K2SO4, SOP) (0.4 kgCO₂kg⁻¹ )</option>
+          <option value="Calcário agrícola">Calcário agrícola (0.085 kgCO₂kg⁻¹ )</option>
+        </select>
+        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+        <button type="button" class="btn-rem" title="Remover">Remover</button>
+      </div>
+    </template>
+
+  
+    <hr style="margin:16px 0;">
+    <!-- ========== HERBICIDAS (linhas repetíveis) ========== -->
+    <h4>Consumo de herbicidas</h4>
+    <div id="herbicidas_wrap"></div>
+    <button type="button" id="add_herbicida">+ Adicionar herbicida</button>
+
+    <template id="tpl_herbicida">
+      <div class="herb-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
+        <select name="__NAME_PREFIX__[marca]" required>
+          <option value="">-- Selecione --</option>
+          <option value="Glifosato">Glifosato(20.3 kgCO₂kg⁻¹) </option>
+          <option value="Flazasulfurão">Flazasulfurão (6.7 kgCO₂kg⁻¹) </option>
+          <option value="Oxifluorfeno">Oxifluorfeno (13.4 kgCO₂kg⁻¹)</option>
+          <option value="Pendimetalina">Pendimetalina(13.5 kgCO₂kg⁻¹) </option>
+        </select>
+        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+        <button type="button" class="btn-rem" title="Remover">Remover</button>
+      </div>
+    </template>
+
+  
+    <hr style="margin:16px 0;">
+    <!-- ========== FITOFÁRMACOS (linhas repetíveis) ========== -->
+    <h4>Consumo de fitofármacos</h4>
+    <div id="fitos_wrap"></div>
+    <button type="button" id="add_fito">+ Adicionar fitofármaco</button>
+
+    <template id="tpl_fito">
+      <div class="fito-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
+        <select name="__NAME_PREFIX__[marca]" required>
+          <option value="">-- Selecione --</option>
+          <option value="Enxofre">Enxofre (1.53 kgCO₂kg⁻¹)</option>
+          <option value="Cobre (óxidos, oxicloreto, hidróxido)">Cobre (óxidos, oxicloreto, hidróxido) (2.77 kgCO₂kg⁻¹)</option>
+          <option value="Folpete">Folpete (12.5 kgCO₂kg⁻¹)</option>
+          <option value="Fosetil de alumínio">Fosetil de alumínio (10 kgCO₂kg⁻¹)</option>
+          <option value="Mandipropamida">Mandipropamida (15 kgCO₂kg⁻¹)</option>
+          <option value="Oxatiapiprolina">Oxatiapiprolina (22.5 kgCO₂kg⁻¹)</option>
+          <option value="Trifloxistrobina (estrobilurina)">Trifloxistrobina (estrobilurina) (17.5 kgCO₂kg⁻¹)</option>
+          <option value="Tebuconazol (triazol)">Tebuconazol (triazol) (14 kgCO₂kg⁻¹)</option>
+          <option value="Metrafenona">Metrafenona (16 kgCO₂kg⁻¹)</option>
+          <option value="Fluxapiroxade">Fluxapiroxade (18 kgCO₂kg⁻¹)</option>
+          <option value="Dimetomorfe">Dimetomorfe (16 kgCO₂kg⁻¹)</option>
+          <option value="Cimoxanil">Cimoxanil (16 kgCO₂kg⁻¹)</option>
+          <option value="Óleo parafínico">Óleo parafínico (2.5 kgCO₂kg⁻¹)</option>
+          <option value="Tau-fluvalinato">Tau-fluvalinato (17.5 kgCO₂kg⁻¹)</option>
+          <option value="Cipermetrina">Cipermetrina (20 kgCO₂kg⁻¹)</option>
+          <option value="Deltametrina">Deltametrina (piretróide)(20.1 kgCO₂kg⁻¹)</option>
+          <option value="Piretróide (genérico)">Piretróide (genérico) (20.5 kgCO₂kg⁻¹)</option>
+          <option value="Trichoderma spp.">Trichoderma spp. (1 kgCO₂kg⁻¹)</option>
+          <option value="Acetato (E,Z)-7,9-dodecadien-1-ilo">Acetato (E,Z)-7,9-dodecadien-1-ilo (7.5 kgCO₂kg⁻¹)</option>
+        </select>
+        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+        <button type="button" class="btn-rem" title="Remover">Remover</button>
+      </div>
+    </template>
+
+
+    <label>
+      <input type="checkbox" id="usar_cf_custom" name="usar_cf_custom" value="1">
+      Utilizar fator de conversão uva → vinho diferente de 0.65
+    </label>
+
+    <div id="cf_box" style="display:none; margin-top:8px;">
+      <label for="cf_uva_vinho">
+        Fator de conversão (L/kg )
+      </label>
+      <input
+        type="number"
+        id="cf_uva_vinho"
+        name="cf_uva_vinho"
+        step="0.01"
+        min="0.1"
+        max="1"
+        placeholder="Ex.: 0.65"
+      >
+      <small style="color:#555">
+        Valor típico entre 0.65 e 1.0.  
+        Se não souber, deixe desativado (assume-se CF = 0.65).
+      </small>
+    </div>
+
+</fieldset>
+
+
+  
+
+
+
+<fieldset class="step-panel" data-step="1" id="step-1">
+<legend><h2>Colheita-Transporte</h2></legend>
+
+    <label for="uvas_colhidas">Quantidade de uvas colhidas</label>
+    <input type="number" name="uvas_colhidas" id="uvas_colhidas" min="0" step="0.000001" placeholder="Toneladas">
+
+    <label>Água gasta em lavagens</label>
+    <input type="number" name="agua_colheita" id="agua_colheita" placeholder="m³"> 
+
+
+    <!-- === Veículos (repetível até 3) === -->
+    <h4>Veículos (Transporte)</h4>
+    <div id="veiculos_trans_wrap"></div>
+    <button type="button" id="add_veiculo_trans">+ Adicionar veículo</button>
+
+    <template id="tpl_veiculo_trans">
+      <div class="veic-item" style="border:1px dashed #ddd; border-radius:8px; padding:10px; margin:10px 0;">
+        <div class="grid-row">
+          <div>
+            <label>Tipo de transporte</label>
+            <select name="__NAME_PREFIX__[veiculo]" required>
+              <option value="">-- Selecione --</option>
+              <option value="Carro">Automóvel</option>
+              <option value="Trator">Trator</option>
+              <option value="Carrinha">Carrinha</option>
+              <option value="Camião">Camião</option>
+              <option value="eletrico">Elétrico</option>
+              <option value="maquina de vinificacao">Máquina de Vinificação</option>
+            </select>
+          </div>
+          <div class="combustivel-box">
+            <label>Tipo de Combustível</label>
+            <select name="__NAME_PREFIX__[combustivel]">
+              <option value="">-- Selecione --</option>
+              <option value="Gasoleo">Gásoleo (2.7 kgCO₂L⁻¹)</option>
+              <option value="Gasoleo Verde">Gásoleo Verde (2.7 kgCO₂L⁻¹)</option>
+              <option value="Gasolina">Gasolina (3.24 kgCO₂L⁻¹)</option>
+              <option value="GPL">GPL (1.48 kgCO₂L⁻¹)</option>
+              <option value="Gás Natural">Gás Natural (1.67 kgCO₂L⁻¹)</option>
+              <option value="Gás Propano">Gás Propano (1.51 kgCO₂L⁻¹)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-row modo-box" style="margin-top:6px;">
+          <div>
+            <label>Como pretende indicar o consumo?</label>
+            <div class="row-actions">
+              <label><input type="radio" name="__NAME_PREFIX__[modo]" value="km"> Por Km</label>
+              <label><input type="radio" name="__NAME_PREFIX__[modo]" value="litros" checked> Por litros</label>
+            </div>
+          </div>
+          <div>
+            <label>Distância </label>
+            <input type="number" name="__NAME_PREFIX__[distancia]" min="0" step="0.000001" placeholder="KM" disabled>
+          </div>
+        </div>
+
+        <div class="grid-row" style="margin-top:6px;">
+          <div class="litros-box">
+            <label>Combustível </label>
+            <input type="number" name="__NAME_PREFIX__[litros]" min="0" step="0.000001" placeholder="Litros">
+          </div>
+          <div class="ev-box" style="display:none;">
+            <label>Eletricidade do veículo </label>
+            <input type="number" name="__NAME_PREFIX__[kwh]" step="0.000001" placeholder="kWh" disabled>
+          </div>
+        </div>
+
+        <div class="row-actions" style="margin-top:8px; justify-content:flex-end;">
+          <button type="button" class="btn-rem">Remover</button>
+        </div>
+      </div>
+    </template>
+    
+    <div style="clear: both;"></div>
+
+    <!-- ===== Uvas compradas ===== -->
+      <label for="uvas_compradas_check">Foram compradas uvas</label>
+      <input type="hidden" name="uvas_compradas_check" value="0">
+      <input type="checkbox" id="uvas_compradas_check" name="uvas_compradas_check" value="1">
+      
+      <div id="uvas_compradas_detalhes" style="display: none; margin-top: 10px;">
+          <label for="uvas_compradas_toneladas">Toneladas de uvas compradas:</label>
+          <input type="number" name="uvas_compradas_toneladas" id="uvas_compradas_toneladas" step="0.01" min="0" placeholder="t">
+      </div>
+    <!-- ======================== -->
+    
+    <!-- ===== Uvas  vendidas ===== -->
+      <label for="uvas_vendidas_check">Foram vendidas uvas</label>
+            <input type="hidden" name="uvas_vendidas_check" value="0">
+      <input type="checkbox" id="uvas_vendidas_check" name="uvas_vendidas_check" value="1">
+      
+      <div id="uvas_vendidas_detalhes" style="display: none; margin-top: 10px;">
+          <label for="uvas_vendidas_toneladas">Toneladas de uvas vendidas:</label>
+          <input type="number" name="uvas_vendidas_toneladas" id="uvas_vendidas_toneladas" step="0.01" min="0" placeholder="t">
+      </div>
+    <!-- ======================== --> 
+
+</fieldset>
+
+
+<fieldset class="step-panel" data-step="2" id="step-2">
+
+<legend><h2>Vinificação</h2></legend>
+
+  <label for="litros_vinificados">Litros vinificados</label>
+  <input type="number" name="litros_vinificados" id="litros_vinificados" min="0" step="0.000001" placeholder="Litros">
+
+  
+  
+  <legend> Eletricidade</legend>
+  <div style="display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:center">
+    <label for="vinif_kwh_rede">Consumo de rede </label>
+    <input type="number" id="vinif_kwh_rede" name="vinif_kwh_rede" step="0.000001" min="0" placeholder="kWh">
+
+    <label for="vinif_kwh_solar">Consumo solar </label>
+    <input type="number" id="vinif_kwh_solar" name="vinif_kwh_solar" step="0.000001" min="0" placeholder="kWh">
+
+    <label for="vinif_kwh_eolica">Consumo eólico </label>
+    <input type="number" id="vinif_kwh_eolica" name="vinif_kwh_eolica" step="0.000001" min="0" placeholder="kWh">
+  </div>
+  <p style="color:#555;margin-top:6px">
+    Preenche só o(s) que usar(es). Campos em branco contam como 0.
+  </p>
+
+ 
+
+  <label>Água </label>
+  <input type="number" name="agua_vinif" placeholder="m³">
+
+  
+  <h4>Gases refrigerantes</h4>
+  <div id="gases_wrap"></div>
+  <button type="button" id="add_gas">+ Adicionar gás</button>
+
+  <template id="tpl_gas">
+    <div class="gas-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
+      <select name="__NAME_PREFIX__[marca]" required>
+        <option value="">-- Selecione --</option>
+        <option value="R-404A">R-404A (3.92 kgCO₂eq)</option>
+        <option value="R-134a">R-134a (1.34 kgCO₂eq)</option>
+        <option value="R-449A">R-449A (1.397 kgCO₂eq)</option>
+        <option value="R-407C">R-407C (1.774 kgCO₂eq)</option>
+        <option value="R-410A">R-410A (2.088 kgCO₂eq)</option>
+        <option value="R-422A">R-422A (3.143 kgCO₂eq)</option>
+        <option value="R-453A">R-453A (1.765 kgCO₂eq)</option>
+      </select>
+      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+      <button type="button" class="btn-rem" title="Remover">Remover</button>
+    </div>
+  </template>
+  
+  <h4>Produtos enológicos</h4>
+  <div id="prod_enol_wrap"></div>
+  <button type="button" id="add_prod_enol">+ Adicionar produto</button>
+
+  <template id="tpl_prod_enol">
+    <div class="prod-enol-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
+      <select name="__NAME_PREFIX__[marca]" required>
+        <option value="">-- Selecione --</option>
+        <option value="Leveduras">Leveduras (2.2 kgCO₂kg⁻¹)</option>
+        <option value="Enzimas">Enzimas (2.2 kgCO₂kg⁻¹)</option>
+        <option value="Nutrientes orgânicos">Nutrientes orgânicos (2.2 kgCO₂kg⁻¹)</option>
+        <option value="Nutrientes minerais">Nutrientes minerais (0.733 kgCO₂kg⁻¹)</option>
+        <option value="Fosfato de diamónio">Fosfato de diamónio (0.733 kgCO₂kg⁻¹)</option>
+        <option value="Bentonite">Bentonite (0.110 kgCO₂kg⁻¹)</option>
+        <option value="Ácido tartárico">Ácido tartárico (3.3 kgCO₂kg⁻¹)</option>
+        <option value="Ácido cítrico">Ácido cítrico (3.3 kgCO₂kg⁻¹)</option>
+        <option value="Colas de origem animal">Colas de origem animal (1.508 kgCO₂kg⁻¹)</option>
+        <option value="Diatomáceas">Diatomáceas (1.010 kgCO₂kg⁻¹)</option>
+        <option value="Metabissulfito de potássio">Metabissulfito de potássio (1.470 kgCO₂kg⁻¹)</option>
+        <option value="Carbonato de cálcio">Carbonato de cálcio (0.075 kgCO₂kg⁻¹)</option>
+        <option value="Cloreto de sódio">Cloreto de sódio (0.169 kgCO₂kg⁻¹)</option>
+        <option value="Dióxido de Enxofre">Dióxido de Enxofre (0.440 kgCO₂kg⁻¹)</option>
+        <option value="Taninos">Taninos (2.2 kgCO₂kg⁻¹)</option>
+        <option value="Aparas">Aparas (0.010 kgCO₂kg⁻¹)</option>
+        <option value="Ácido lático">Ácido lático (3.3 kgCO₂kg⁻¹)</option>
+        <option value="Ácido málico">Ácido málico (3.3 kgCO₂kg⁻¹)</option>
+        <option value="Goma Arábica">Goma Arábica (0.400 kgCO₂kg⁻¹)</option>
+      </select>
+      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg " required>
+      <button type="button" class="btn-rem" title="Remover">Remover</button>
+    </div>
+  </template>
+</fieldset>
+
+
+
+<fieldset class="step-panel" data-step="3" id="step-3">
+
+  <legend><h2>Engarrafamento</h2></legend>
+
+
+  <legend> Eletricidade</legend>
+  <div style="display:grid;grid-template-columns:220px 1fr;gap:10px;align-items:center">
+    <label for="engar_kwh_rede">Consumo de rede </label>
+    <input type="number" id="engar_kwh_rede" name="engar_kwh_rede" step="0.000001" min="0" placeholder="kWh">
+
+    <label for="engar_kwh_solar">Consumo solar </label>
+    <input type="number" id="engar_kwh_solar" name="engar_kwh_solar" step="0.000001" min="0" placeholder="kWh">
+
+    <label for="engar_kwh_eolica">Consumo eólico </label>
+    <input type="number" id="engar_kwh_eolica" name="engar_kwh_eolica" step="0.000001" min="0" placeholder="kWh">
+  </div>
+  <p style="color:#555;margin-top:6px">
+    Preenche só o(s) que usar(es). Campos em branco contam como 0.
+  </p>
+
+
+  <h4>Produtos de limpeza</h4>
+  <div id="limpezas_wrap"></div>
+  <button type="button" id="add_limpeza">+ Adicionar produto</button>
+
+  <template id="tpl_limpeza">
+    <div class="limpeza-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
+      <select name="__NAME_PREFIX__[marca]" required>
+        <option value="">-- Selecione --</option>
+        <option value="Lauril sulfato de sódio, EDTA">Lauril sulfato de sódio, EDTA (0.473 kgCO₂kg⁻¹)</option>
+        <option value="Soda Cáustica">Soda Cáustica (0.587 kgCO₂kg⁻¹)</option>
+        <option value="Hipoclorito de sódio">Hipoclorito de sódio (0.587 kgCO₂kg⁻¹)</option>
+        <option value="C₆H₈O₇, citric acid, monohydrate">C₆H₈O₇, citric acid, monohydrate (3. 3 kgCO₂kg⁻¹)</option>
+      </select>
+
+      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+      <button type="button" class="btn-rem" title="Remover">Remover</button>
+    </div>
+  </template>
+
+
+  <label for="agua_engarrafamento">Água consumida </label>
+  <input type="number" name="agua_engarrafamento" id="agua_engarrafamento" placeholder="m³">
+
+  <label for="volume_garrafa">Volume da garrafa </label>
+  <input type="number" name="volume_garrafa" id="volume_garrafa" step="0.000001" min="0" placeholder=" Litros ">
+  
+  <input type="hidden" name="produz_componentes_internamente" value="0">
+  <input type="checkbox" id="produz_componentes_internamente" name="produz_componentes_internamente" value="1">
+  <label for="produz_componentes_internamente">A empresa internaliza os rótulos, rolhas e garrafas internamente?</label>
+  
+  <!-- TUDO o que deve ser mostrado/ocultado fica aqui dentro -->
+  <div id="componentes_internos" style="display: none; margin-top: 10px;">
+    <label for="material_garrafa">  Garrafa</label>
+    <select name="material_garrafa" id="material_garrafa">
+      <option value="">-- Selecione --</option>
+      <option value="Vidro Branco">Vidro Branco(0.791 kgCO₂kg⁻¹)</option>
+      <option value="Vidro Escuro">Vidro Escuro(0.810 kgCO₂kg⁻¹)</option>
+      <option value="Bag-in-box">Bag-in-box(0.725 kgCO₂kg⁻¹)</option>
+      <option value="PET bottle">PET bottle(3.400 kgCO₂kg⁻¹)</option>
+    </select>
+    <input type="number" name="qtd_material_garrafa" id="qtd_material_garrafa" step="0.000001" min="0" placeholder="kg">
+
+    <label for="tipo_rotulo">Rótulo</label>
+    <select name="tipo_rotulo" id="tipo_rotulo">
+      <option value="">-- Selecione --</option>
+      <option value="Papel de impressão">Papel de impressão(2.930 kgCO₂kg⁻¹)</option>
+      <option value="Papel/cartao">Papel/cartão(1.426 kgCO₂kg⁻¹)</option>
+      <option value="filme plastico">filme plastico(5.500 kgCO₂kg⁻¹)</option>
+    </select>
+    <input type="number" name="qtd_rotulo" id="qtd_rotulo" step="0.000001" min="0" placeholder="kg">
+
+    <label for="tipo_rolha">Rolha</label>
+    <select name="tipo_rolha" id="tipo_rolha">
+      <option value="">-- Selecione --</option>
+      <option value="rolha cortiça natural">Cortiça natural(1.370 kgCO₂kg⁻¹)</option>
+      <option value="rolha sintetica/técnica">Cortiça sintetica/técnica(2.200 kgCO₂kg⁻¹)</option>
+      <option value="tampa de Alumínio">tampa de aluminio(8.950 kgCO₂kg⁻¹)</option>
+    </select>
+    <input type="number" name="qtd_rolha" id="qtd_rolha" step="0.000001" min="0" placeholder="kg">
+  </div>
+</fieldset>
+
+
+<fieldset class="step-panel" data-step="4" id="step-4">
+<legend><h2>Distribuição</h2></legend>
+
+  <input type="hidden" name="incluir_distribuicao" value="0">
+  <input type="checkbox" id="incluir_distribuicao" name="incluir_distribuicao" value="1">
+  <label for="incluir_distribuicao">Incluir dados de distribuição?</label>
+
+  <div id="secao_distribuicao" style="display: none; margin-top: 10px;">
+
+    <label for="quantidade_transportada">Volume total transportado </label>
+    <input type="number" name="quantidade_transportada" id="quantidade_transportada" step="0.000001" min="0" placeholder=" Litros">
+    
+    <label for ="garrafas_distribuidas">Número de garrafas distribuídas </label>
+    <input type="number" name="garrafas_distribuidas" id="garrafas_distribuidas" step="1" min="0" placeholder=" Nº de garrafas ">
+
+    <label for="eletricidade_armazem">Eletricidade em armazém </label>
+    <input type="number" name="eletricidade_armazem" id="eletricidade_armazem" step="0.000001" min="0" placeholder=" kWh ">
+
+    <div id="veiculos_dist_wrap"></div>
+    <button type="button" id="add_veiculo_dist">+ Adicionar veículo</button>
+
+    <template id="tpl_veiculo_dist">
+      <div class="veic-item" style="border:1px dashed #ddd; border-radius:8px; padding:10px; margin:10px 0;">
+        <div class="grid-row">
+          <div>
+            <label>Tipo de veículo</label>
+            <select name="__NAME_PREFIX__[veiculo]" required>
+              <option value="">-- Selecione --</option>
+              <option value="Barco">Barco</option>
+              <option value="Carrinha">Carrinha</option>
+              <option value="Camião">Camião</option>
+              <option value="Aviao">Avião</option>
+              <option value="eletrico">Elétrico</option>
+            </select>
+          </div>
+          <div class="combustivel-box">
+            <label>Tipo de Combustível</label>
+            <select name="__NAME_PREFIX__[combustivel]">
+              <option value="">-- Selecione --</option>
+              <option value="Gasoleo">Gásoleo (2.7 kg CO₂L⁻¹)</option>
+              <option value="Gasoleo Verde">Gásoleo Verde (2.7 kg CO₂L⁻¹)</option>
+              <option value="Gasolina">Gasolina (3.24 kg CO₂L⁻¹)</option>
+              <option value="GPL">GPL (1.48 kg CO₂L⁻¹)</option>
+              <option value="Gás Natural">Gás Natural (1.67 kg CO₂L⁻¹)</option>
+              <option value="Gás Propano">Gás Propano (1.51 kg CO₂L⁻¹)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-row modo-box" style="margin-top:6px;">
+          <div>
+            <label>Como pretende indicar o consumo?</label>
+            <div class="row-actions">
+              <label><input type="radio" name="__NAME_PREFIX__[modo]" value="km"> Por Km</label>
+              <label><input type="radio" name="__NAME_PREFIX__[modo]" value="litros" checked> Por litros</label>
+            </div>
+          </div>
+          <div>
+            <label>Distância </label>
+            <input type="number" name="__NAME_PREFIX__[distancia]" min="0" step="0.000001" placeholder="Km" disabled>
+          </div>
+        </div>
+
+        <div class="grid-row" style="margin-top:6px;">
+          <div class="litros-box">
+            <label>Combustível </label>
+            <input type="number" name="__NAME_PREFIX__[litros]" min="0" step="0.000001" placeholder="Litros">
+          </div>
+          <div class="ev-box" style="display:none;">
+            <label>Eletricidade do veículo </label>
+            <input type="number" name="__NAME_PREFIX__[kwh]" step="0.000001" placeholder="kWh" disabled>
+          </div>
+        </div>
+
+        <div class="row-actions" style="margin-top:8px; justify-content:flex-end;">
+          <button type="button" class="btn-rem">Remover</button>
+        </div>
+      </div>  
+    </template>
+  </div>  
+</fieldset>
+
+<div style="margin-top:20px;">
+<div class="wizard-nav"><button class="btn btn-secondary" id="btn_prev" type="button">Anterior</button><button class="btn btn-primary" id="btn_next" type="button">Próximo</button><button class="btn btn-success" id="btn_submit" type="submit">Submeter</button></div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ===== Helpers =====
+  const qs  = (sel, root=document) => root.querySelector(sel);
+  const qsa = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+  const setDisabledIn = (container, disabled) => {
+    if (!container) return;
+    qsa('input, select, textarea', container).forEach(el => el.disabled = disabled);
+  };
+
+  // Repetidor com limite (usado em listas e agora também em veículos)
+  // — compatível com o teu uso anterior, e com suporte opcional a onAdd(rowEl, index)
+  const makeRepeater = ({ wrapId, tplId, addBtnId, namePrefix, max = 3, createInitial = true, onAdd }) => {
+    const wrap   = qs('#' + wrapId);
+    const tpl    = qs('#' + tplId);
+    const addBtn = qs('#' + addBtnId);
+    if (!wrap || !tpl || !addBtn) return;
+
+    let nextIndex = 0;
+
+    // contador visual (ex.: "(1/3)")
+    const hint = document.createElement('span');
+    hint.className = 'mini-hint';
+    hint.textContent = '(0/' + max + ')';
+    addBtn.insertAdjacentElement('afterend', hint);
+
+    const countRows = () => wrap.children.length;
+
+    const updateState = () => {
+      const c = countRows();
+      hint.textContent = `(${c}/${max})`;
+      addBtn.disabled = c >= max;
+    };
+
+    const addRow = () => {
+      if (countRows() >= max) { updateState(); return; }
+
+      const frag = tpl.content.cloneNode(true);
+
+      // renomeia campos "__NAME_PREFIX__" -> "namePrefix[index]"
+      qsa('[name*="__NAME_PREFIX__"]', frag).forEach(el => {
+        el.name = el.name.replace('__NAME_PREFIX__', `${namePrefix}[${nextIndex}]`);
+      });
+
+      // remover linha
+      const rowEl = frag.firstElementChild;
+      const remBtn = qs('.btn-rem', rowEl);
+      if (remBtn) {
+        remBtn.addEventListener('click', () => {
+          rowEl.remove();
+          updateState();
+        });
+      }
+
+      wrap.appendChild(frag);
+
+      // callback para inicializar comportamentos específicos (ex.: veículos)
+      if (typeof onAdd === 'function') onAdd(rowEl, nextIndex);
+
+      nextIndex++;
+      updateState();
+    };
+
+    addBtn.addEventListener('click', addRow);
+    if (createInitial) addRow(); else updateState();
+  };
+
+
+
+  // Uvas compradas / vendidas
+  const chkCompr = document.getElementById('uvas_compradas_check');
+  const detCompr = document.getElementById('uvas_compradas_detalhes');
+  const chkVend  = document.getElementById('uvas_vendidas_check');
+  const detVend  = document.getElementById('uvas_vendidas_detalhes');
+
+  function toggleBox(chk, box){
+    if(!chk || !box) return;
+    const on = chk.checked;
+    box.style.display = on ? 'block' : 'none';
+    box.querySelectorAll('input').forEach(el => el.disabled = !on);
+  }
+
+  if (chkCompr){
+    chkCompr.addEventListener('change', () => toggleBox(chkCompr, detCompr));
+    toggleBox(chkCompr, detCompr);
+  }
+
+  if (chkVend){
+    chkVend.addEventListener('change', () => toggleBox(chkVend, detVend));
+    toggleBox(chkVend, detVend);
+  }
+
+  // ====== Lógica por linha de VEÍCULO (km vs litros vs EV) ======
+  function initVehicleRow(row) {
+    const selVeic = qs('select[name$="[veiculo]"]', row);
+    const boxComb = qs('.combustivel-box', row);
+    const boxEv   = qs('.ev-box', row);
+    const radios  = qsa('input[type="radio"][name$="[modo]"]', row);
+    const inpKm   = qs('input[name$="[distancia]"]', row);
+    const inpLt   = qs('input[name$="[litros]"]', row);
+    const inpKwh  = qs('input[name$="[kwh]"]', row);
+
+    function refreshModo() {
+      const isKm = (radios.find(r => r.checked)?.value === 'km');
+      if (inpKm) inpKm.disabled = !isKm;
+      if (inpLt) inpLt.disabled = isKm;
+      if (isKm) { if (inpLt) inpLt.value = ''; }
+      else      { if (inpKm) inpKm.value = ''; }
+    }
+
+    function refreshVeic() {
+      const elet = (selVeic?.value || '').toLowerCase() === 'eletrico';
+      if (boxEv)   boxEv.style.display   = elet ? 'block' : 'none';
+      if (boxComb) boxComb.style.display = elet ? 'none'  : 'block';
+      if (inpKwh)  inpKwh.disabled = !elet;
+      setDisabledIn(boxComb, elet);
+
+      if (elet) {
+        // limpa e bloqueia modo km/litros quando é elétrico
+        if (inpLt) inpLt.value = '';
+        if (inpKm) inpKm.value = '';
+        radios.forEach(r => { r.checked = false; r.disabled = true; });
+      } else {
+        radios.forEach(r => { r.disabled = false; });
+        // se nenhum estiver marcado (p.ex. após trocar de elétrico -> combustão), força "litros"
+        if (!radios.some(r => r.checked)) {
+          const def = radios.find(r => r.value === 'litros'); if (def) def.checked = true;
+        }
+        refreshModo();
+      }
+    }
+
+    radios.forEach(r => r.addEventListener('change', refreshModo));
+    if (selVeic) selVeic.addEventListener('change', refreshVeic);
+
+    // estado inicial
+    refreshVeic();
+  }
+
+
+
+  // ===== NOVO: Veículos repetíveis =====
+  // (Se os elementos não existirem no HTML, estas chamadas não fazem nada)
+  makeRepeater({
+    wrapId:'veiculos_vit_wrap',
+    tplId:'tpl_veiculo_vit',
+    addBtnId:'add_veiculo_vit',
+    namePrefix:'veiculos_vit',
+    max:3,
+    onAdd: initVehicleRow
+  });
+  makeRepeater({
+    wrapId:'veiculos_trans_wrap',
+    tplId:'tpl_veiculo_trans',
+    addBtnId:'add_veiculo_trans',
+    namePrefix:'veiculos_trans',
+    max:3,
+    onAdd: initVehicleRow
+  });
+    // Repetidor para veículos de distribuição
+  makeRepeater({
+    wrapId: 'veiculos_dist_wrap',
+    tplId:  'tpl_veiculo_dist',
+    addBtnId: 'add_veiculo_dist',
+    namePrefix: 'veiculos_dist',
+    max: 3,
+    onAdd: initVehicleRow
+  });
+
+  // Toggle componentes internos (Engarrafamento)
+  const chkComp = document.getElementById('produz_componentes_internamente');
+  const boxComp = document.getElementById('componentes_internos');
+
+  function toggleComp() {
+    if (!chkComp || !boxComp) return;
+
+    const ativo = chkComp.checked;
+
+    boxComp.style.display = ativo ? 'block' : 'none';
+
+    // ativa/desativa inputs internos
+    boxComp.querySelectorAll('input, select').forEach(el => {
+      el.disabled = !ativo;
+    });
+  }
+
+  if (chkComp) {
+    chkComp.addEventListener('change', toggleComp);
+    toggleComp(); // estado inicial
+  }
+
+  // Toggle Distribuição
+  const chkDist = document.getElementById('incluir_distribuicao');
+  const secDist = document.getElementById('secao_distribuicao');
+
+  function toggleDistribuicao() {
+    if (!chkDist || !secDist) return;
+
+    const ativo = chkDist.checked;
+    secDist.style.display = ativo ? 'block' : 'none';
+
+    // ativa/desativa todos os campos internos
+    secDist.querySelectorAll('input, select').forEach(el => {
+      el.disabled = !ativo;
+    });
+  }
+
+  if (chkDist) {
+    chkDist.addEventListener('change', toggleDistribuicao);
+    toggleDistribuicao(); // estado inicial
+  }
+  // ===== VITICULTURA (LEGADO — mantido para compatibilidade) =====
+  //const veiculoVit        = qs('#veiculo_vit');
+  //const contCombVit       = qs('#combustivel_container_vit');
+  //const contElecVit       = qs('#eletricidade_veiculo_vit');
+  //const radioKmVit        = qs('#modo_km_vit');
+  //const radioLtVit        = qs('#modo_litros_vit');
+  //const inputKmVit        = qs('#distancia_vit');
+  //const inputLtVit        = qs('#combustivel_qtd_vit');
+  //const selectCombVit     = qs('#combustivel_tipo_vit');
+  //const inputKwhVit       = qs('#eletricidade_veiculo_kwh_vit');
+
+  //const refreshModoVit = () => {
+    //if (!radioKmVit || !inputKmVit || !inputLtVit) return;
+    //const isKm = radioKmVit.checked;
+    //inputKmVit.disabled = !isKm;
+    //inputLtVit.disabled = isKm;
+    //if (isKm) inputLtVit.value = ''; else inputKmVit.value = '';
+  //};
+
+  //const refreshVeiculoVit = () => {
+    //if (!veiculoVit) return;
+    //const elet = veiculoVit.value === 'eletrico';
+    //if (contElecVit)  contElecVit.style.display  = elet ? 'block' : 'none';
+    //if (contCombVit)  contCombVit.style.display  = elet ? 'none'  : 'block';
+    //setDisabledIn(contElecVit, !elet);
+    //setDisabledIn(contCombVit,  elet);
+    //if (elet) {
+      //if (inputKmVit)    inputKmVit.value = '';
+      //if (inputLtVit)    inputLtVit.value = '';
+      //if (selectCombVit) selectCombVit.value = '';
+    //} else {
+      //if (inputKwhVit) inputKwhVit.value = '';
+      //refreshModoVit();
+    //}
+  //};
+
+  //if (veiculoVit) {
+    //veiculoVit.addEventListener('change', refreshVeiculoVit);
+    //if (radioKmVit) radioKmVit.addEventListener('change', refreshModoVit);
+    //if (radioLtVit) radioLtVit.addEventListener('change', refreshModoVit);
+    //refreshVeiculoVit();
+  //}
+
+  // Repetidores de Viticultura
+  //makeRepeater({ wrapId:'fertilizantes_wrap', tplId:'tpl_fertilizante', addBtnId:'add_fertilizante', namePrefix:'fertilizantes', max:5 });
+  //makeRepeater({ wrapId:'herbicidas_wrap',    tplId:'tpl_herbicida',    addBtnId:'add_herbicida',    namePrefix:'herbicidas',    max:5 });
+  //makeRepeater({ wrapId:'fitos_wrap',         tplId:'tpl_fito',         addBtnId:'add_fito',         namePrefix:'fitos',         max:5 });
+
+  // ===== COLHEITA =====
+  //const radioKmColh  = qs('#modo_km_colh');
+  //const radioLtColh  = qs('#modo_litros_colh');
+  //const inputKmColh  = qs('#distancia_colh');
+  //const inputLtColh  = qs('#combustivel_qtd_colh');
+
+  /* const refreshColheita = () => {
+    if (!radioKmColh || !inputKmColh || !inputLtColh) return;
+    const isKm = radioKmColh.checked;
+    inputKmColh.disabled = !isKm;
+    inputLtColh.disabled = isKm;
+    if (isKm) inputLtColh.value = ''; else inputKmColh.value = '';
+  };
+
+  if (radioKmColh && radioLtColh) {
+    radioKmColh.addEventListener('change', refreshColheita);
+    radioLtColh.addEventListener('change', refreshColheita);
+    refreshColheita();
+  } */
+
+  // ===== TRANSPORTES (LEGADO — mantido) =====
+  /* const radioKmTrans = qs('#modo_km_trans');
+  const radioLtTrans = qs('#modo_litros_trans');
+  const inputKmTrans = qs('#distancia_trans');
+  const inputLtTrans = qs('#combustivel_qtd_trans');
+
+  const refreshTrans = () => {
+    if (!radioKmTrans || !inputKmTrans || !inputLtTrans) return;
+    const isKm = radioKmTrans.checked;
+    inputKmTrans.disabled = !isKm;
+    inputLtTrans.disabled = isKm;
+    if (isKm) inputLtTrans.value = ''; else inputKmTrans.value = '';
+  };
+
+  if (radioKmTrans && radioLtTrans) {
+    radioKmTrans.addEventListener('change', refreshTrans);
+    radioLtTrans.addEventListener('change', refreshTrans);
+    refreshTrans();
+  }
+
+  // “Foram compradas uvas?”
+  const chkUva = qs('#transporte_uva_check');
+  const detUva = qs('#transporte_uva_detalhes');
+  const toggleUva = () => {
+    if (!chkUva || !detUva) return;
+    const on = chkUva.checked;
+    detUva.style.display = on ? 'block' : 'none';
+    setDisabledIn(detUva, !on);
+  };
+  if (chkUva) { chkUva.addEventListener('change', toggleUva); toggleUva(); }
+
+ 
+
+  // ===== VINIFICAÇÃO =====
+  const origemElec           = qs('#eletricidade_origem');
+  const detalhesAutoconsumo  = qs('#autoconsumo_detalhes');
+  const consumoTotalDireto   = qs('#consumo_total_direto');
+  const inputTotal           = qs('#eletricidade_vinif');
+  const inputAuto            = qs('#eletricidade_autoconsumo');
+  const inputRede            = qs('#eletricidade_rede');
+
+  const refreshVinif = () => {
+    if (!origemElec) return;
+    const v = origemElec.value;
+    const isAuto = v === 'autoconsumo';
+    if (detalhesAutoconsumo) detalhesAutoconsumo.style.display = isAuto ? 'block' : 'none';
+    if (consumoTotalDireto)  consumoTotalDireto.style.display  = (!v || isAuto) ? 'none' : 'block';
+    if (isAuto)  { if (inputTotal) inputTotal.value = ''; }
+    else         { if (inputAuto)  inputAuto.value  = ''; if (inputRede) inputRede.value = ''; }
+  };
+
+  if (origemElec) {
+    origemElec.addEventListener('change', refreshVinif);
+    refreshVinif();
+  }
+
+  // ===== Engarrafamento — eletricidade (igual à Vinificação) =====
+  const origemEng = document.getElementById('eletricidade_origem_engar');
+  const boxEngDir = document.getElementById('consumo_total_engar');
+  const boxEngAut = document.getElementById('autoconsumo_engar');
+  const engTot    = document.getElementById('engar_kwh_total');
+  const engAuto   = document.getElementById('engar_kwh_auto');
+  const engRede   = document.getElementById('engar_kwh_rede');
+
+  function refreshEng() {
+    if (!origemEng) return;
+    const v = origemEng.value;
+    const isAuto = v === 'autoconsumo';
+
+    if (boxEngAut) boxEngAut.style.display = isAuto ? 'block' : 'none';
+    if (boxEngDir) boxEngDir.style.display = (!v || isAuto) ? 'none' : 'block';
+
+    // obrigações contextuais
+    if (engTot)  { engTot.required  = !isAuto && !!v; if (isAuto) engTot.value = ''; }
+    if (engAuto) { engAuto.required = isAuto; if (!isAuto) engAuto.value = ''; }
+    if (engRede) { engRede.required = isAuto; if (!isAuto) engRede.value = ''; }
+  }
+
+  if (origemEng) {
+    origemEng.addEventListener('change', refreshEng);
+    refreshEng();
+  }
+
+  // Repetidores de Vinificação
+  makeRepeater({ wrapId:'gases_wrap',      tplId:'tpl_gas',       addBtnId:'add_gas',       namePrefix:'gases',                max:3 });
+  makeRepeater({ wrapId:'prod_enol_wrap',  tplId:'tpl_prod_enol', addBtnId:'add_prod_enol', namePrefix:'produtos_enologicos',  max:10 });
+
+  // ===== ENGARRAFAMENTO =====
+  makeRepeater({ wrapId:'limpezas_wrap', tplId:'tpl_limpeza', addBtnId:'add_limpeza', namePrefix:'limpezas', max:3 });
+
+  // “Produz componentes internamente?”
+  const chkComp = qs('#produz_componentes_internamente');
+  const boxComp = qs('#componentes_internos');
+  const toggleComp = () => {
+    if (!chkComp || !boxComp) return;
+    const on = chkComp.checked;
+    boxComp.style.display = on ? 'block' : 'none';
+    setDisabledIn(boxComp, !on);
+  };
+  if (chkComp) { chkComp.addEventListener('change', toggleComp); toggleComp(); }
+
+  // ===== DISTRIBUIÇÃO =====
+  const chkDist = qs('#incluir_distribuicao');
+  const secDist = qs('#secao_distribuicao');
+  const toggleDist = () => {
+    if (!chkDist || !secDist) return;
+    const on = chkDist.checked;
+    secDist.style.display = on ? 'block' : 'none';
+    setDisabledIn(secDist, !on);
+  };
+  if (chkDist) { chkDist.addEventListener('change', toggleDist); toggleDist(); }
+
+  // --- Distribuição: auto-cálculo de nº de garrafas = quantidade_transportada / volume_garrafa ---
+  const inpVolTrans   = document.getElementById('quantidade_transportada'); // L totais (dist)
+  const inpNGarDist   = document.getElementById('garrafas_distribuidas');   // nº garrafas (dist)
+  const inpVolGarrafa = document.getElementById('volume_garrafa');          // L por garrafa (campo global)
+
+  
+  
+  // km vs litros (Distribuição)
+  const radioKmDist  = qs('#modo_km_dist');
+  const radioLtDist  = qs('#modo_litros_dist');
+  const inputKmDist  = qs('#distancia_dist');
+  const inputLtDist  = qs('#combustivel_qtd_dist');
+
+  const refreshDist = () => {
+    if (!radioKmDist || !inputKmDist || !inputLtDist) return;
+    const isKm = radioKmDist.checked;
+    inputKmDist.disabled = !isKm;
+    inputLtDist.disabled = isKm;
+    if (isKm) inputLtDist.value = ''; else inputKmDist.value = '';
+  };
+
+  if (radioKmDist && radioLtDist) {
+    radioKmDist.addEventListener('change', refreshDist);
+    radioLtDist.addEventListener('change', refreshDist);
+    refreshDist();
+  }
+ */
+  makeRepeater({
+    wrapId:'fertilizantes_wrap',
+    tplId:'tpl_fertilizante',
+    addBtnId:'add_fertilizante',
+    namePrefix:'fertilizantes',
+    max:5
+  });
+
+  makeRepeater({
+    wrapId:'herbicidas_wrap',
+    tplId:'tpl_herbicida',
+    addBtnId:'add_herbicida',
+    namePrefix:'herbicidas',
+    max:5
+  });
+
+  makeRepeater({
+    wrapId:'fitos_wrap',
+    tplId:'tpl_fito',
+    addBtnId:'add_fito',
+    namePrefix:'fitos',
+    max:5
+  });
+
+  makeRepeater({
+    wrapId:'gases_wrap',
+    tplId:'tpl_gas',
+    addBtnId:'add_gas',
+    namePrefix:'gases',
+    max:3
+  });
+
+  makeRepeater({
+    wrapId:'prod_enol_wrap',
+    tplId:'tpl_prod_enol',
+    addBtnId:'add_prod_enol',
+    namePrefix:'produtos_enologicos',
+    max:10
+  });
+  
+  makeRepeater({
+    wrapId:'limpezas_wrap',
+    tplId:'tpl_limpeza',
+    addBtnId:'add_limpeza',
+    namePrefix:'limpezas',
+    max:3
+  });
+
+ // usar o ID real do <select> no HTML
+  const nivelSeq  = qs('#sequestro_nivel');
+  const wrapSeq   = qs('#sequestro_valor_wrap');
+  const inputSeq  = qs('#sequestro_valor');
+  const hintSeq   = qs('#sequestro_hint');
+
+  function applySeqRange(min, max) {
+    if (!wrapSeq || !inputSeq) return;
+    wrapSeq.style.display = 'block';
+    inputSeq.required = true;
+    inputSeq.min  = String(min);
+    inputSeq.max  = String(max);
+    inputSeq.step = '0.01';
+    inputSeq.placeholder = `${min.toFixed(2)}–${max.toFixed(2)}`;
+    if (hintSeq) hintSeq.textContent = `Intervalo permitido: ${min.toFixed(2)} a ${max.toFixed(2)} t CO₂eq/ha·ano`;
+    if (inputSeq.value !== '' && (+inputSeq.value < min || +inputSeq.value > max)) inputSeq.value = '';
+  }
+
+  function refreshSequestro() {
+    if (!nivelSeq) return;
+    switch (nivelSeq.value) {
+      case 'muito_baixo':
+        if (wrapSeq) wrapSeq.style.display = 'none';
+        if (inputSeq) { inputSeq.required = false; inputSeq.value = ''; }
+        if (hintSeq) hintSeq.textContent = 'Valor fixo: 0,01 t CO₂eq/ha·ano';
+        break;
+      case 'nao_considerar':
+         if (wrapSeq) wrapSeq.style.display = 'none';
+         if (inputSeq) { inputSeq.required = false; inputSeq.value = ''; }
+         if (hintSeq) hintSeq.textContent = 'Valor fixo: 0,00 t CO₂eq/ha·ano';
+         break;
+      case 'baixo':          applySeqRange(0.10, 0.15); break;
+      case 'medio':          applySeqRange(0.16, 0.35); break;
+      case 'alto':           applySeqRange(0.40, 0.80); break;
+      case 'muito_elevado':  applySeqRange(1.00, 1.35); break;
+      default:
+        if (wrapSeq) wrapSeq.style.display = 'none';
+        if (inputSeq) { inputSeq.required = false; inputSeq.value = ''; }
+        if (hintSeq) hintSeq.textContent = '';
+    }
+  }
+
+  if (nivelSeq) {
+    nivelSeq.addEventListener('change', refreshSequestro);
+    refreshSequestro();
+  }
+
+  // ===============================
+// CF: mostrar / esconder input
+// ===============================
+
+const chkCF = document.getElementById('usar_cf_custom');
+const boxCF = document.getElementById('cf_box');
+const inpLitros = document.getElementById('litros_vinificados');
+if (chkCF && boxCF) {
+  function refreshCF() {
+    boxCF.style.display = chkCF.checked ? 'block' : 'none';
+    if (!chkCF.checked) {
+      const inp = document.getElementById('cf_uva_vinho');
+      if (inp) inp.value = '';
+    }
+  }
+
+  chkCF.addEventListener('change', refreshCF);
+  refreshCF();
+}
+
+});
+
+
+</script>
+<script>
+(function() {
+  const textos = {
+    nao_considerar: "O sequestro de carbono não será considerado neste cálculo.",
+    muito_baixo: "Solo nu, mobilização intensa, ausência de resíduos orgânicos ou coberturas vegetais (sem práticas de sequestro)valor 0,01 t CO₂eq/ha·ano.",
+    baixo: "Cobertura vegetal temporária, baixa adição de matéria orgânica, lavoura convencional.",
+    medio: "Rotação de culturas, incorporação ocasional de composto, alguma redução de mobilização do solo.",
+    alto: "Cobertura permanente do solo, compostagem regular, práticas conservacionistas integradas (mobilização reduzida).",
+    muito_elevado: "Múltiplas práticas combinadas: agrofloresta (árvores na vinha), compostagem intensiva, mobilização mínima, faixas/sebes, retorno total de resíduos culturais ao solo."
+  };
+
+  const ranges = {
+  baixo: [0.10, 0.15],
+  medio: [0.16, 0.35],
+  alto:  [0.40, 0.80],
+  muito_elevado: [1.00, 1.35]
+  };
+
+
+  const select  = document.getElementById('sequestro_nivel');
+  const tooltip = document.getElementById('tipSequestro');
+  const inputMin   = document.getElementById('sequestro_min');   // opcionais
+  const inputMax   = document.getElementById('sequestro_max');
+  const inputValor = document.getElementById('sequestro_valor');
+
+  function fmt(v){ return (typeof v === 'number' ? v.toFixed(2) : v) + " t CO₂e/ha·ano"; }
+
+  select.addEventListener('change', function () {
+    const v = this.value;
+    tooltip.textContent = textos[v] || "Selecione um nível para ver uma explicação breve.";
+
+    if (v === "muito_baixo") {
+      if (inputMin) inputMin.placeholder = fmt(0.01);
+      if (inputMax) inputMax.placeholder = fmt(0.01);
+      if (inputValor) inputValor.placeholder = fmt(0.01);
+      return;
+    }
+
+    if (ranges[v]) {
+      const [mn, mx] = ranges[v];
+      if (inputMin)   inputMin.placeholder   = fmt(mn);
+      if (inputMax)   inputMax.placeholder   = fmt(mx);
+      if (inputValor) inputValor.placeholder = "Sugestão: " + fmt((mn + mx) / 2);
+    } else {
+      if (inputMin)   inputMin.placeholder   = "Valor mínimo (t CO₂e/ha·ano)";
+      if (inputMax)   inputMax.placeholder   = "Valor máximo (t CO₂e/ha·ano)";
+      if (inputValor) inputValor.placeholder = "Valor estimado (t CO₂e/ha·ano)";
+    }
+  });
+})();
+</script>
+
+<!-- <script>
+ (function initVehicleSection(containerId, addBtnId){
+  const cont = document.getElementById(containerId);
+  if (!cont) return;
+
+  function wireRow(row){
+    const fuel = row.querySelector('select[name$="[combustivel]"]');
+    const mode = row.querySelector('select[name$="[modo]"]');
+    const km   = row.querySelector('input[name$="[km]"]');
+    const qty  = row.querySelector('input[name$="[litros]"]'); // este input é usado para litros OU kWh
+
+    function applyState(){
+      const isEV = fuel && /eletric/i.test(fuel.value);
+
+      if (isEV){
+        // EV: só kWh
+        if (mode){
+          mode.value = 'kwh';
+          mode.disabled = true;
+        }
+        if (km){   km.value = ''; km.disabled = true; }
+        if (qty){  qty.disabled = false; qty.placeholder = 'kWh'; }
+      } else {
+        // Combustão: km ou litros (nunca kWh)
+        if (mode){
+          if (mode.value === 'kwh') mode.value = 'km'; // força saída do kWh
+          mode.disabled = false;
+        }
+        if (mode && mode.value === 'km'){
+          if (km){  km.disabled = false; }
+          if (qty){ qty.value = ''; qty.disabled = true; qty.placeholder = 'litros'; }
+        } else {
+          // modo = 'litros' (fallback se vazio)
+          if (km){  km.value = ''; km.disabled = true; }
+          if (qty){ qty.disabled = false; qty.placeholder = 'litros'; }
+        }
+      }
+    }
+
+    if (fuel) fuel.addEventListener('change', applyState);
+    if (mode) mode.addEventListener('change', applyState);
+    applyState(); // estado inicial
+  }
+
+  // ligar linhas existentes
+  [...cont.querySelectorAll('.row')].forEach(wireRow);
+
+  // se tiveres botão de adicionar, volta a ligar nas novas linhas
+  if (addBtnId){
+    const addBtn = document.getElementById(addBtnId);
+    if (addBtn){
+      addBtn.addEventListener('click', () => {
+        // pequeno atraso para dar tempo à linha ser inserida pelo teu código
+        setTimeout(() => {
+          const rows = cont.querySelectorAll('.row');
+          if (rows.length) wireRow(rows[rows.length - 1]);
+        }, 0);
+      });
+    }
+  }
+})('veiculos_vit_container','add_veiculo_vit'); // <— ajusta os IDs ao que usas aí
+</script> --> 
+
+<script>
+(function () {
+
+  // ===============================
+  // FUNÇÃO DE VALIDAÇÃO
+  // ===============================
+  function validarCampo(el) {
+    if (el.disabled) return;
+
+    // Campo opcional vazio → neutro
+    if (!el.value && !el.required) {
+      el.classList.remove('is-valid', 'is-invalid');
+      return;
+    }
+
+    if (el.checkValidity()) {
+      el.classList.add('is-valid');
+      el.classList.remove('is-invalid');
+    } else {
+      el.classList.add('is-invalid');
+      el.classList.remove('is-valid');
+    }
+  }
+
+  // ===============================
+  // DELEGAÇÃO DE EVENTOS (CORRETO)
+  // funciona para campos normais e dinâmicos
+  // ===============================
+
+  document.addEventListener('input', function (e) {
+    if (e.target.matches('input, select')) {
+      validarCampo(e.target);
+    }
+  });
+
+  document.addEventListener('blur', function (e) {
+    if (e.target.matches('input, select')) {
+      validarCampo(e.target);
+    }
+  }, true);
+
+})();
+</script>
+</form><script>
+(function(){
+  const form = document.querySelector('form');
+  if(!form) return;
+
+  const panels = Array.from(form.querySelectorAll('fieldset.step-panel'));
+  const steps = Array.from(form.querySelectorAll('.stepper-step'));
+  const btnPrev = document.getElementById('btn_prev');
+  const btnNext = document.getElementById('btn_next');
+  const btnSubmit = document.getElementById('btn_submit');
+  const progress = document.getElementById('wizard_progress');
+
+  if(panels.length === 0 || steps.length === 0) return;
+
+  let current = 0;
+  let maxReached = 0;
+
+  function setAria(){
+    panels.forEach((p,i)=>{
+      p.setAttribute('aria-hidden', i===current ? 'false' : 'true');
+    });
+    steps.forEach((li,i)=>{
+      const btn = li.querySelector('button');
+      if(!btn) return;
+      btn.setAttribute('aria-current', i===current ? 'step' : 'false');
+    });
+  }
+
+  function updateUI(){
+    panels.forEach((p,i)=> p.hidden = i !== current);
+
+    steps.forEach((li,i)=>{
+      li.classList.toggle('is-active', i===current);
+      li.classList.toggle('is-done', i < current);
+      // bloquear saltos para a frente além do próximo passo permitido
+      const locked = i > maxReached + 1;
+      li.classList.toggle('is-locked', locked);
+      const b = li.querySelector('button');
+      if(b) b.disabled = locked;
+    });
+
+    btnPrev.disabled = current === 0;
+    btnNext.hidden = current === panels.length - 1;
+    btnSubmit.hidden = current !== panels.length - 1;
+
+    if(progress){
+      progress.textContent = `Etapa ${current+1} de ${panels.length}`;
+    }
+
+    setAria();
+    // garantir que o topo da etapa fica visível
+    panels[current].scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function panelIsValid(idx){
+    const panel = panels[idx];
+    // validar apenas inputs/selects/textarea visíveis dentro do panel
+    const fields = Array.from(panel.querySelectorAll('input, select, textarea'))
+      .filter(el => !el.disabled);
+
+    // Se não houver constraints, assume válido
+    for(const el of fields){
+      if(typeof el.checkValidity === 'function' && !el.checkValidity()){
+        if(typeof el.reportValidity === 'function') el.reportValidity();
+        el.focus({preventScroll:true});
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function goTo(idx){
+    if(idx < 0 || idx >= panels.length) return;
+    if(idx > current){
+      // ao avançar, valida o passo atual
+      if(!panelIsValid(current)) return;
+      maxReached = Math.max(maxReached, idx);
+    }
+    current = idx;
+    updateUI();
+  }
+
+  btnPrev && btnPrev.addEventListener('click', ()=> goTo(current-1));
+  btnNext && btnNext.addEventListener('click', ()=> goTo(current+1));
+
+  steps.forEach(li=>{
+    const b = li.querySelector('button');
+    if(!b) return;
+    b.addEventListener('click', ()=>{
+      const idx = parseInt(li.getAttribute('data-step'), 10);
+      // permitir voltar sempre; avançar só até maxReached+1 (com validação)
+      if(idx <= current) return goTo(idx);
+      if(idx <= maxReached + 1) return goTo(idx);
+    });
+  });
+
+  // inicia
+  updateUI();
+})();
+
+
+
+</script></body>
+</html>
