@@ -4,19 +4,15 @@
 ini_set('display_errors', '1');
 error_reporting(E_ALL);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT); // mysqli lança exceções
-ini_set('display_errors', '1');
-error_reporting(E_ALL);
-mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-$host = getenv('MYSQLHOST') ?: 'mysql.railway.internal';
-$port = (int)(getenv('MYSQLPORT') ?: 3306);
-$user = getenv('MYSQLUSER') ?: 'root';
-$password = getenv('MYSQLPASSWORD') ?: '';
-$dbname = getenv('MYSQL_DATABASE') ?: 'railway';
+// ---- DB ----
+$host = getenv('DB_HOST');
+$user = getenv('DB_USER');
+$password = getenv('DB_PASSWORD');
+$dbname = getenv('DB_NAME');
+$port = getenv('DB_PORT') ?: 3306;
 
-$conn = new mysqli($host, $user, $password, $dbname, $port);
-$conn->set_charset('utf8mb4');
-
+$conn = new mysqli($host, $user, $password, $dbname, (int)$port);
 // ---- Helpers base ----
 function num($val): float {
     if ($val === null) return 0.0;
@@ -58,6 +54,10 @@ function process_vehicle_rows(array $rows, string $elec_origin, array $COMB_FATO
         $km   = num($r['distancia'] ?? null);
         $lt   = num($r['litros'] ?? null);
         $kwh  = num($r['kwh'] ?? null);
+
+        if ($veic === '' && $comb === '' && $km <= 0 && $lt <= 0 && $kwh <= 0) {
+            continue;
+        }
 
         if (norm_key($veic) === 'eletrico') {
             // elétrico: ignora km/litros; usa kWh × fator_ev
@@ -331,7 +331,7 @@ $fertArr = array_slice($fertArr, 0, 5);
 foreach ($fertArr as $row) {
   $marca = isset($row['marca']) ? trim((string)$row['marca']) : '';
   $qtd   = num($row['qtd'] ?? null);
-  if ($marca === '' || $qtd <= 0) continue;
+  if ($marca === '' || $marca === '0' || $qtd <= 0) continue; 
   $fertilizante_emissao += ($fertilizante_fatores[$marca] ?? 0.0) * $qtd;
 }
 
@@ -348,7 +348,7 @@ $herbArr = array_slice($herbArr, 0, 5);
 foreach ($herbArr as $row) {
   $marca = isset($row['marca']) ? trim((string)$row['marca']) : '';
   $qtd   = num($row['qtd'] ?? null);
-  if ($marca === '' || $qtd <= 0) continue;
+  if ($marca === '' || $marca === '0' || $qtd <= 0) continue; 
   $herbicida_emissao += ($herbicida_fatores[$marca] ?? 0.0) * $qtd;
 }
 
@@ -380,7 +380,7 @@ $fitoArr = array_slice($fitoArr, 0, 5);
 foreach ($fitoArr as $row) {
   $marca = isset($row['marca']) ? trim((string)$row['marca']) : '';
   $qtd   = num($row['qtd'] ?? null);
-  if ($marca === '' || $qtd <= 0) continue;
+  if ($marca === '' || $marca === '0' || $qtd <= 0) continue; 
   $fitofarmaco_emissao += ($fitofarmacos_fatores[$marca] ?? 0.0) * $qtd;
 }
 
@@ -466,7 +466,7 @@ $gasArr = array_slice($gasArr, 0, 3);
 foreach ($gasArr as $row) {
     $marca = isset($row['marca']) ? trim((string)$row['marca']) : '';
     $qtd   = num($row['qtd'] ?? null);
-    if ($marca === '' || $qtd <= 0) continue;
+    if ($marca === '' || $marca === '0' || $qtd <= 0) continue; 
     $gases_emissao += ($gases_fatores[$marca] ?? 0.0) * $qtd;
 }
 
@@ -497,7 +497,7 @@ $prodEnolArr = array_slice($prodEnolArr, 0, 10);
 foreach ($prodEnolArr as $row) {
     $marca = isset($row['marca']) ? trim((string)$row['marca']) : '';
     $qtd   = num($row['qtd'] ?? null);
-    if ($marca === '' || $qtd <= 0) continue;
+    if ($marca === '' || $marca === '0' || $qtd <= 0) continue; 
     $produto_enologico_emissao += ($produto_enologico_fatores[$marca] ?? 0.0) * $qtd;
 }
 
@@ -536,7 +536,7 @@ $limpArr = array_slice($limpArr, 0, 3);
 foreach ($limpArr as $row) {
     $marca = isset($row['marca']) ? trim((string)$row['marca']) : '';
     $qtd   = num($row['qtd'] ?? null);
-    if ($marca === '' || $qtd <= 0) continue;
+    if ($marca === '' || $marca === '0' || $qtd <= 0) continue; 
     $produto_limpeza_emissao += ($produto_limpeza_fatores[$marca] ?? 0.0) * $qtd;
 }
 $agua_engarrafamento = num($_POST['agua_engarrafamento'] ?? null);
@@ -929,7 +929,7 @@ if (!empty($_POST['fertilizantes']) && is_array($_POST['fertilizantes'])) {
     foreach ($_POST['fertilizantes'] as $row) {
         $marca = trim((string)($row['marca'] ?? ''));
         $qtd   = num($row['qtd'] ?? null);
-        if ($marca === '' || $qtd <= 0) continue;
+        if ($marca === '' || $marca === '0' || $qtd <= 0) continue;
         $stmt->bind_param('isd', $viticultura_id, $marca, $qtd);
         $stmt->execute();
     }
@@ -944,7 +944,7 @@ if (!empty($_POST['herbicidas']) && is_array($_POST['herbicidas'])) {
     foreach ($_POST['herbicidas'] as $row) {
         $marca = trim((string)($row['marca'] ?? ''));
         $qtd   = num($row['qtd'] ?? null);
-        if ($marca === '' || $qtd <= 0) continue;
+        if ($marca === '' || $marca === '0' || $qtd <= 0) continue;
         $stmt->bind_param('isd', $viticultura_id, $marca, $qtd);
         $stmt->execute();
     }
@@ -959,7 +959,7 @@ if (!empty($_POST['fitos']) && is_array($_POST['fitos'])) {
     foreach ($_POST['fitos'] as $row) {
         $marca = trim((string)($row['marca'] ?? ''));
         $qtd   = num($row['qtd'] ?? null);
-        if ($marca === '' || $qtd <= 0) continue;
+        if ($marca === '' || $marca === '0' || $qtd <= 0) continue;
         $stmt->bind_param('isd', $viticultura_id, $marca, $qtd);
         $stmt->execute();
     }
@@ -1045,7 +1045,7 @@ if (!empty($_POST['gases']) && is_array($_POST['gases'])) {
     foreach ($_POST['gases'] as $row) {
         $marca = trim((string)($row['marca'] ?? ''));
         $qtd   = num($row['qtd'] ?? null);
-        if ($marca === '' || $qtd <= 0) continue;
+        if ($marca === '' || $marca === '0' || $qtd <= 0) continue;
         $stmt->bind_param('isd', $vinificacao_id, $marca, $qtd);
         $stmt->execute();
     }
@@ -1060,7 +1060,7 @@ if (!empty($_POST['produtos_enologicos']) && is_array($_POST['produtos_enologico
     foreach ($_POST['produtos_enologicos'] as $row) {
         $marca = trim((string)($row['marca'] ?? ''));
         $qtd   = num($row['qtd'] ?? null);
-        if ($marca === '' || $qtd <= 0) continue;
+        if ($marca === '' || $marca === '0' || $qtd <= 0) continue;
         $stmt->bind_param('isd', $vinificacao_id, $marca, $qtd);
         $stmt->execute();
     }
@@ -1117,7 +1117,7 @@ if (!empty($_POST['limpezas']) && is_array($_POST['limpezas'])) {
     foreach ($_POST['limpezas'] as $row) {
         $marca = trim((string)($row['marca'] ?? ''));
         $qtd   = num($row['qtd'] ?? null);
-        if ($marca === '' || $qtd <= 0) continue;
+        if ($marca === '' || $marca === '0' || $qtd <= 0) continue;
         $stmt->bind_param('isd', $engarrafamento_id, $marca, $qtd);
         $stmt->execute();
     }

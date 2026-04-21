@@ -375,7 +375,7 @@ input:focus, select:focus, textarea:focus{
         <div class="grid-row">
           <div>
             <label>Tipo de veículo</label>
-            <select name="__NAME_PREFIX__[veiculo]" required>
+            <select name="__NAME_PREFIX__[veiculo]" >
               <option value="">-- Selecione --</option>
               <option value="carro">Automóvel</option>
               <option value="trator">Trator</option>
@@ -431,7 +431,7 @@ input:focus, select:focus, textarea:focus{
     </div>
     </template>
 
-    <label>Água consumida</label><input type="number" name="agua_vit" placeholder="m³">
+    <label>Água consumida</label><input type="number" name="agua_vit" step="0.000001" min="0" placeholder="m³">
 
     <label>Área da vinha </label>
     <input type="number" name="area_vinha"
@@ -475,8 +475,9 @@ input:focus, select:focus, textarea:focus{
 
     <template id="tpl_fertilizante">
       <div class="fert-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
-        <select name="__NAME_PREFIX__[marca]" required>
+        <select name="__NAME_PREFIX__[marca]">
           <option value="">-- Selecione --</option>
+          <option value="0">Não considerar</option>
           <option value="Estrume bovino fresco">Estrume bovino fresco (0.25 kgCO₂kg⁻¹)</option>
           <option value="Estrume de aves">Estrume de aves (0.35 kgCO₂kg⁻¹)</option>
           <option value="Esterco suíno líquido">Esterco suíno líquido (0.04 kgCO₂kg⁻¹)</option>
@@ -497,7 +498,7 @@ input:focus, select:focus, textarea:focus{
           <option value="Sulfato de potássio(K2SO4, SOP)">Sulfato de potássio(K2SO4, SOP) (0.4 kgCO₂kg⁻¹ )</option>
           <option value="Calcário agrícola">Calcário agrícola (0.085 kgCO₂kg⁻¹ )</option>
         </select>
-        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" >
         <button type="button" class="btn-rem" title="Remover">Remover</button>
       </div>
     </template>
@@ -511,14 +512,15 @@ input:focus, select:focus, textarea:focus{
 
     <template id="tpl_herbicida">
       <div class="herb-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
-        <select name="__NAME_PREFIX__[marca]" required>
+        <select name="__NAME_PREFIX__[marca]" >
           <option value="">-- Selecione --</option>
+          <option value="0">Não considerar</option>
           <option value="Glifosato">Glifosato(20.3 kgCO₂kg⁻¹) </option>
           <option value="Flazasulfurão">Flazasulfurão (6.7 kgCO₂kg⁻¹) </option>
-          <option value="Oxifluorfeno">Oxifluorfeno (13.4 kgCO₂kg⁻¹)</option>
+          <option value="Oxifluorfeno">Oxifluorfeno (13.4 kgCO₂kg⁻¹)</option> 
           <option value="Pendimetalina">Pendimetalina(13.5 kgCO₂kg⁻¹) </option>
         </select>
-        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" >
         <button type="button" class="btn-rem" title="Remover">Remover</button>
       </div>
     </template>
@@ -532,8 +534,9 @@ input:focus, select:focus, textarea:focus{
 
     <template id="tpl_fito">
       <div class="fito-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
-        <select name="__NAME_PREFIX__[marca]" required>
+        <select name="__NAME_PREFIX__[marca]" >
           <option value="">-- Selecione --</option>
+          <option value="0">Não considerar</option>
           <option value="Enxofre">Enxofre (1.53 kgCO₂kg⁻¹)</option>
           <option value="Cobre (óxidos, oxicloreto, hidróxido)">Cobre (óxidos, oxicloreto, hidróxido) (2.77 kgCO₂kg⁻¹)</option>
           <option value="Folpete">Folpete (12.5 kgCO₂kg⁻¹)</option>
@@ -554,7 +557,7 @@ input:focus, select:focus, textarea:focus{
           <option value="Trichoderma spp.">Trichoderma spp. (1 kgCO₂kg⁻¹)</option>
           <option value="Acetato (E,Z)-7,9-dodecadien-1-ilo">Acetato (E,Z)-7,9-dodecadien-1-ilo (7.5 kgCO₂kg⁻¹)</option>
         </select>
-        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+        <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg">
         <button type="button" class="btn-rem" title="Remover">Remover</button>
       </div>
     </template>
@@ -598,7 +601,7 @@ input:focus, select:focus, textarea:focus{
     <input type="number" name="uvas_colhidas" id="uvas_colhidas" min="0" step="0.000001" placeholder="Toneladas">
 
     <label>Água gasta em lavagens</label>
-    <input type="number" name="agua_colheita" id="agua_colheita" placeholder="m³"> 
+    <input type="number" name="agua_colheita" id="agua_colheita" step="0.000001" min="0" placeholder="m³"> 
 
 
     <!-- === Veículos (repetível até 3) === -->
@@ -611,7 +614,7 @@ input:focus, select:focus, textarea:focus{
         <div class="grid-row">
           <div>
             <label>Tipo de transporte</label>
-            <select name="__NAME_PREFIX__[veiculo]" required>
+            <select name="__NAME_PREFIX__[veiculo]" >
               <option value="">-- Selecione --</option>
               <option value="Carro">Automóvel</option>
               <option value="Trator">Trator</option>
@@ -720,7 +723,7 @@ input:focus, select:focus, textarea:focus{
  
 
   <label>Água </label>
-  <input type="number" name="agua_vinif" placeholder="m³">
+  <input type="number" name="agua_vinif" step="0.000001" min="0" placeholder="m³">
 
   
   <h4>Gases refrigerantes</h4>
@@ -729,8 +732,9 @@ input:focus, select:focus, textarea:focus{
 
   <template id="tpl_gas">
     <div class="gas-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
-      <select name="__NAME_PREFIX__[marca]" required>
+      <select name="__NAME_PREFIX__[marca]" >
         <option value="">-- Selecione --</option>
+        <option value="0">Não considerar</option>
         <option value="R-404A">R-404A (3.92 kgCO₂eq)</option>
         <option value="R-134a">R-134a (1.34 kgCO₂eq)</option>
         <option value="R-449A">R-449A (1.397 kgCO₂eq)</option>
@@ -739,7 +743,7 @@ input:focus, select:focus, textarea:focus{
         <option value="R-422A">R-422A (3.143 kgCO₂eq)</option>
         <option value="R-453A">R-453A (1.765 kgCO₂eq)</option>
       </select>
-      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" >
       <button type="button" class="btn-rem" title="Remover">Remover</button>
     </div>
   </template>
@@ -750,8 +754,9 @@ input:focus, select:focus, textarea:focus{
 
   <template id="tpl_prod_enol">
     <div class="prod-enol-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
-      <select name="__NAME_PREFIX__[marca]" required>
+      <select name="__NAME_PREFIX__[marca]" >
         <option value="">-- Selecione --</option>
+        <option value="0">Não considerar</option>
         <option value="Leveduras">Leveduras (2.2 kgCO₂kg⁻¹)</option>
         <option value="Enzimas">Enzimas (2.2 kgCO₂kg⁻¹)</option>
         <option value="Nutrientes orgânicos">Nutrientes orgânicos (2.2 kgCO₂kg⁻¹)</option>
@@ -772,7 +777,7 @@ input:focus, select:focus, textarea:focus{
         <option value="Ácido málico">Ácido málico (3.3 kgCO₂kg⁻¹)</option>
         <option value="Goma Arábica">Goma Arábica (0.400 kgCO₂kg⁻¹)</option>
       </select>
-      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg " required>
+      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg " >
       <button type="button" class="btn-rem" title="Remover">Remover</button>
     </div>
   </template>
@@ -807,22 +812,23 @@ input:focus, select:focus, textarea:focus{
 
   <template id="tpl_limpeza">
     <div class="limpeza-item" style="display:grid;grid-template-columns:1fr 160px auto;gap:8px;margin:8px 0;">
-      <select name="__NAME_PREFIX__[marca]" required>
+      <select name="__NAME_PREFIX__[marca]" >
         <option value="">-- Selecione --</option>
+        <option value="0">Não considerar</option>
         <option value="Lauril sulfato de sódio, EDTA">Lauril sulfato de sódio, EDTA (0.473 kgCO₂kg⁻¹)</option>
         <option value="Soda Cáustica">Soda Cáustica (0.587 kgCO₂kg⁻¹)</option>
         <option value="Hipoclorito de sódio">Hipoclorito de sódio (0.587 kgCO₂kg⁻¹)</option>
         <option value="C₆H₈O₇, citric acid, monohydrate">C₆H₈O₇, citric acid, monohydrate (3. 3 kgCO₂kg⁻¹)</option>
       </select>
 
-      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" required>
+      <input type="number" name="__NAME_PREFIX__[qtd]" step="0.000001" min="0" placeholder="kg" >
       <button type="button" class="btn-rem" title="Remover">Remover</button>
     </div>
   </template>
 
 
   <label for="agua_engarrafamento">Água consumida </label>
-  <input type="number" name="agua_engarrafamento" id="agua_engarrafamento" placeholder="m³">
+  <input type="number" name="agua_engarrafamento" id="agua_engarrafamento" step="0.000001" min="0" placeholder="m³">
 
   <label for="volume_garrafa">Volume da garrafa </label>
   <input type="number" name="volume_garrafa" id="volume_garrafa" step="0.000001" min="0" placeholder=" Litros ">
@@ -890,7 +896,7 @@ input:focus, select:focus, textarea:focus{
         <div class="grid-row">
           <div>
             <label>Tipo de veículo</label>
-            <select name="__NAME_PREFIX__[veiculo]" required>
+            <select name="__NAME_PREFIX__[veiculo]" >
               <option value="">-- Selecione --</option>
               <option value="Barco">Barco</option>
               <option value="Carrinha">Carrinha</option>
@@ -1005,6 +1011,22 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       wrap.appendChild(frag);
+
+      //  BLOQUEAR QUANTIDADE SE "Não considerar"
+      const select = rowEl.querySelector('select');
+      const qtdInput = rowEl.querySelector('input[type="number"]');
+
+      if (select && qtdInput) {
+         select.addEventListener('change', function () {
+           if (this.value === '0') {
+             qtdInput.value = 0;
+             qtdInput.disabled = true;
+           } else {
+              qtdInput.disabled = false;
+              if (qtdInput.value === '0') qtdInput.value = '';
+          }
+       });
+     }
 
       // callback para inicializar comportamentos específicos (ex.: veículos)
       if (typeof onAdd === 'function') onAdd(rowEl, nextIndex);
@@ -1483,7 +1505,9 @@ if (chkCF && boxCF) {
   refreshCF();
 }
 
+
 });
+
 
 
 </script>
